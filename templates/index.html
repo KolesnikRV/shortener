@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block header %}<h1>Последние обновления на сайте</h1>{% endblock %}
+{% block title %}Последние обновления на сайте{% endblock %}
+{% block content %}
+
+<div class="card-body">
+ <table class="table">
+  <tbody>
+    <tr>
+      <td>
+        {% for error in form.errors %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endfor %}
+
+  <form method="post" action="{% url 'url:index' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {% for field in form %}
+                <label for="{{ field.id_for_label }}" class="col-md-4 col-form-label text-md-right">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}</label>
+                <div class="col-md-6">
+                    {{ field }}
+                    {% if field.help_text %}
+                    <small id="{{ field.id_for_label }}-help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+                    {% endif %}
+                </div>
+    {% endfor %}
+
+    <div class="col-md-6  offset-md-2">
+            <button type="submit" class="btn btn-primary">
+                Добавить
+            </button>
+    </div>
+  </form>
+</td>
+<td>
+</div> <!-- col-md-4 -->
+</div> <!-- card body -->
+    <div class="container">
+        {% for url in page %}
+            {% include "includes/url_item.html" with url=url %}
+        {% endfor %}
+    </div>
+    {% include "includes/paginator.html" with page=page paginator=paginator %}
+</td>
+</tr>
+</tbody>
+</table>
+{% endblock %}

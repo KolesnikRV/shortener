@@ -1,0 +1,40 @@
+version: '3.7'
+
+services:
+  db:
+    image: mysql:8.0.27
+    restart: unless-stopped
+    volumes:
+      - mysql_data:/var/lib/mysql
+    expose:
+    - '3306'
+    environment:
+      MYSQL_DATABASE: mysql
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: mysql
+      MYSQL_ROOT_PASSWORD: root
+  backend:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    volumes:
+      - static_value:/static/
+      - media_value:/media/
+    ports:
+      - '8000:8000'
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - ./.env
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+
+volumes:
+  mysql_data:
+  static_value:
+  media_value:
