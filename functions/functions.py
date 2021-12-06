@@ -1,4 +1,3 @@
-import string
 import random
 
 from django.conf import settings
@@ -13,11 +12,12 @@ def get_session_instance(request) -> Session:
     return Session.objects.get(session_key=request.session.session_key)
 
 
-def get_short_random_string(N=settings.SHORT_URL_LENGTH) -> str:
+def get_short_random_string(N=settings.SHORT_URL_LENGTH, subpart=None,
+                            alphabet=settings.ALPHABET) -> str:
+    if subpart:
+        return subpart
 
-    return ''.join(random.SystemRandom().choice(
-                   string.ascii_letters + string.digits)
-                   for _ in range(N))
+    return ''.join(random.SystemRandom().choice(alphabet) for _ in range(N))
 
 
 def url_exists(short_url, redis_instance) -> bool:
@@ -34,15 +34,15 @@ def get_shor_url_str(domain, subpart) -> str:
 
 
 def make_short_url(request, subpart, redis_instance) -> str:
-    if not subpart:
-        subpart = get_short_random_string()
     domain = request.get_host()
+    subpart = get_short_random_string(subpart=subpart)
     short_url = get_shor_url_str(domain, subpart)
 
+    if subpart and url_exists(short_url, redis_instance):
+        raise ValueError('url already exists')
+
     while url_exists(short_url, redis_instance):
-        print('hamster ------')
-        subpart += get_short_random_string(2)
+        subpart = get_short_random_string()
         short_url = get_shor_url_str(domain, subpart)
 
-    print(short_url)
     return short_url

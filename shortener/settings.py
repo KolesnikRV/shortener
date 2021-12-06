@@ -1,19 +1,55 @@
+from dotenv import load_dotenv
 import os
 from pathlib import Path
 
+load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+REDIS_HOST = os.getenv('REDIS_HOST')  # 'localhost'
+REDIS_PORT = os.getenv('REDIS_PORT')
 
-SECRET_KEY = 'django-insecure-3a1hi69!%*97#e6cd7)&ovw09x_1sv(o$g(4n4k@hxkb@@0zn4'
+DEBUG = True
+SHORT_URL_LENGTH = 7
+CLEAR_DATA_MINUTES = 1
+PAGINATION_PAGES = 3
+ALPHABET = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+WSGI_APPLICATION = 'shortener.wsgi.application'
+ROOT_URLCONF = 'shortener.urls'
+STATIC_URL = 'static/'
+LANGUAGE_CODE = 'ru-RU'
+TIME_ZONE = 'UTC'
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
+APPEND_SLASH = True
 
-DEBUG = True  # Dont forget to change to false
 
-ALLOWED_HOSTS = []
+DATABASES = {
+    'default': {
+        'ENGINE': os.getenv('DB_ENGINE'),
+        'NAME': os.getenv('MYSQL_DATABASE'),
+        'USER': os.getenv('MYSQL_USER'),
+        'PASSWORD': os.getenv('MYSQL_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
+    }
+
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
+}
 
 
-if DEBUG:
-    import socket
-    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
-    INTERNAL_IPS = [ip[:-1] + '1' for ip in ips] + ['127.0.0.1', '10.0.2.2']
+
+# if DEBUG:
+#     import socket
+#     hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+#     INTERNAL_IPS = [ip[:-1] + '1' for ip in ips] + ['127.0.0.1', '10.0.2.2']
 
 INSTALLED_APPS = [
     'django.contrib.contenttypes',
@@ -23,12 +59,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'debug_toolbar',
-    'django_crontab',
+    'django_crontab', ####
     'url',
     'api',
 ]
 CRONJOBS = [
-    ('* * * * *', 'url.cron.do')
+    ('* * * * *', 'url.cron.do')  ############3
 ]
 
 MIDDLEWARE = [
@@ -41,10 +77,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'shortener.urls'
-
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -60,49 +93,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'shortener.wsgi.application'
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'mysql.connector.django',
-        'NAME': 'mysql',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'db',
-        'PORT': '3306',
-    }
-
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': PAGINATION_PAGES
 }
-
-LANGUAGE_CODE = 'ru-RU'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
-
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
-
-STATIC_URL = 'static/'
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
-
-REDIS_HOST = 'redis'#'localhost'
-
-REDIS_PORT = 6379
-
-SHORT_URL_LENGTH = 7
-
-APPEND_SLASH = True
-CLEAR_DATA_MINUTES = 1

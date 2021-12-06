@@ -31,10 +31,7 @@ services:
   redis:
     image: redis:alpine
     restart: unless-stopped
-    volumes:
-      - ./redis.conf:/usr/local/etc/redis/redis.conf
 
 volumes:
   mysql_data:
   static_value:
-  media_value:
