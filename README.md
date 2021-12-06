@@ -44,4 +44,4 @@
   - $ docker-compose up --build
   
 ### Автор
-  - @KolesnikRV
+  - [KolesnikRV](https://github.com/KolesnikRV)
