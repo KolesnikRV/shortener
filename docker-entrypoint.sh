@@ -1,4 +1,10 @@
 #!/bin/bash
+# Create logs dir and log files
+mkdir logs
+touch ./logs/api.log
+touch ./logs/url.log
+touch ./logs/celery_tasks.log
+
 # Create database migrations
 echo "Creating database migrations"
 python manage.py makemigrations
