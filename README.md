@@ -45,7 +45,7 @@
 Для установки и запуска достаточно выполнить следующие действия:
   - $ git clone https://github.com/KolesnikRV/shortener.git
   - $ cd shortener
-  - $ docker-compose up --build
+  - $ sudo docker-compose up --build
   - Затем переходим по ссылке http://127.0.0.1:8000 или http://127.0.0.1:8000/api
 
 ### Планируемые улучшения
