@@ -6,5 +6,5 @@ app_name = 'url'
 
 urlpatterns = [
     path('', index, name='index'),
-    re_path(r'^[a-z0-9!"#$%&()*+,.:;<=>]', url_redirect, name='redirect'),
+    re_path(r'^[a-zA-Z0-9_,/.:;&@]*$', url_redirect, name='redirect'),
 ]

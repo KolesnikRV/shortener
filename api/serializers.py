@@ -1,20 +1,22 @@
+import redis
 from django.conf import settings
 from rest_framework import serializers
-import redis
 
-from url.models import Url
 from functions.functions import make_short_url
+from url.models import Url
 
 redis_instance = redis.StrictRedis(host=settings.REDIS_HOST,
                                    port=settings.REDIS_PORT, db=0)
 
 
 class UrlSerializer(serializers.ModelSerializer):
+    '''Serializer for Url model'''
     class Meta:
         model = Url
         fields = ('full_url', 'short_url')
 
     def create(self, validated_data):
+        '''Setting user_id and short_url to validated data'''
         request = self.context.get('request')
         validated_data['user_id'] = (
                 request.session._get_session_key()
@@ -26,4 +28,4 @@ class UrlSerializer(serializers.ModelSerializer):
         except ValueError as e:
             raise serializers.ValidationError(e)
 
-        return validated_data
+        return Url.objects.create(**validated_data)
