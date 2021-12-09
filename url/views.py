@@ -75,9 +75,13 @@ def index(request):
 
 
 def url_redirect(request):
-    '''
-    View for redirecting users to full_url by short_url
-    '''
-    url = Url.objects.get(short_url=request.build_absolute_uri())
+    ''' View for redirecting users to full_url by short_url
 
-    return redirect(url.full_url)
+    '''
+    short_url = request.build_absolute_uri()
+
+    url = redis_instance.get(short_url).decode()
+    if not url:
+        url = Url.objects.get(short_url=short_url).full_url
+
+    return redirect(url)
